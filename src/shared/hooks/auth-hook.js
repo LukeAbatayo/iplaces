@@ -3,12 +3,12 @@ import { useState, useCallback, useEffect } from "react";
 let logoutTimer;
 
 export const useAuth = () => {
-  const [token, isToken] = useState(false);
+  const [token, setToken] = useState(false);
   const [tokenExpirationDate, setTokenExpirationDate] = useState();
   const [userId, setUserId] = useState(false);
 
   const login = useCallback((uId, token, tokenExpirationDate) => {
-    isToken(token);
+    setToken(token);
     setUserId(uId);
     tokenExpirationDate = tokenExpirationDate || new Date(new Date().getTime() + 1000 * 60 * 60);
     setTokenExpirationDate(tokenExpirationDate);
@@ -16,7 +16,7 @@ export const useAuth = () => {
   }, []);
 
   const logout = useCallback(() => {
-    isToken(null);
+    setToken(null);
     setTokenExpirationDate(null);
     setUserId(null);
     localStorage.removeItem('userData');
@@ -34,7 +34,7 @@ export const useAuth = () => {
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem('userData'));
     if (storedData && storedData.token && new Date(storedData.expiration) > new Date()) {
-      login(storedData.uId, storedData.token, new Date(storedData.expiration));
+      login(storedData.userId, storedData.token, new Date(storedData.expiration));
     }
   }, [login]);
 
